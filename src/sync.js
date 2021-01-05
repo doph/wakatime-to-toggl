@@ -1,12 +1,14 @@
 const wakaTime = require('./wakatime');
 const toggl = require('./toggl');
 const ora = require('ora');
+const wakaTimePid = 166177719
 
 module.exports = async function (flags) {
     // Call WakaTime and Toggl APIs
     const wakaTimeActivity = await wakaTime.getActivity(flags.day, flags.minDuration, flags.wakatime);
     const togglInfo = await toggl.getInfo(flags.toggl);
-
+    
+    /*
     // List all WakaTime projects
     const wakaTimeProjects = Object.keys(
         wakaTimeActivity.reduce((acc, act) => {
@@ -31,17 +33,22 @@ module.exports = async function (flags) {
         acc[p.name.toLowerCase()] = p.id;
         return acc;
     }, {});
-
+    */
+    
     // Add WakaTime entries to Toggl
     let added = 0;
     let duplicates = 0;
     let projects = {};
     const spinner = ora('Adding entries to Toggl...').start();
     for (const entry of wakaTimeActivity) {
+        /*
         const projectId = projectIds[entry.project.toLowerCase()];
         if (!projectId) {
             throw new Error(`project "${entry.project}" doesn't exist in Toggl`);
         }
+        */
+        const projectId = wakaTimePid // set all entries coming from wakatime to Wakatime project
+        const description = entry.project
         const start = new Date(Math.round(entry.time) * 1000).toISOString();
         const duration = Math.round(entry.duration);
         if (alreadyExists(projectId, start, duration, togglInfo.entries)) {
@@ -50,7 +57,7 @@ module.exports = async function (flags) {
             continue;
         }
 
-        await toggl.addEntry(projectId, start, duration, flags.toggl);
+        await toggl.addEntry(projectId, description, start, duration, flags.toggl);
         spinner.text = `Added ${added}/${wakaTimeActivity.length} entries to Toggl...`;
         if (duplicates > 0) {
             spinner.text += ` Found ${duplicates} duplicates`;
