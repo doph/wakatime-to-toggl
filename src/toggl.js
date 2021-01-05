@@ -77,13 +77,13 @@ module.exports = {
                 throw new Error(`cannot create Toggl project ${name}: ${err}`);
             });
     },
-    addEntry: async function (projectId, start, duration, apiKey) {
+    addEntry: async function (projectId, description, start, duration, apiKey) {
         return instance
             .post(
                 'time_entries',
                 {
                     time_entry: {
-                        description: 'Development',
+                        description: description,
                         duration: duration,
                         start: start,
                         pid: projectId,
