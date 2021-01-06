@@ -1,5 +1,6 @@
 name: Run wakatime-to-toggl everyday
 on:
+    workflow_dispatch:
     schedule:
         - cron: 00 13 * * * # 5am PST
 jobs:
