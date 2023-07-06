@@ -57,7 +57,7 @@ module.exports = async function (flags) {
             continue;
         }
 
-        await toggl.addEntry(projectId, description, start, duration, flags.toggl);
+        await toggl.addEntry(projectId, description, start, duration, flags.toggl, togglInfo.workspaceId);
         spinner.text = `Added ${added}/${wakaTimeActivity.length} entries to Toggl...`;
         if (duplicates > 0) {
             spinner.text += ` Found ${duplicates} duplicates`;
