@@ -2,7 +2,7 @@ const axios = require('axios');
 const ora = require('ora');
 
 const instance = axios.create({
-    baseURL: 'https://api.track.toggl.com/api/v8',
+    baseURL: 'https://api.track.toggl.com/api/v9',
     headers: {
         'Content-Type': 'application/json',
     },
@@ -51,11 +51,10 @@ module.exports = {
         const spinner = ora(`Creating project "${name}" in Toggl...`);
         return instance
             .post(
-                'projects',
+                `/workspaces/${workspaceId}/projects`,
                 {
                     project: {
                         name: name,
-                        wid: workspaceId,
                     },
                 },
                 {
@@ -77,10 +76,10 @@ module.exports = {
                 throw new Error(`cannot create Toggl project ${name}: ${err}`);
             });
     },
-    addEntry: async function (projectId, description, start, duration, apiKey) {
+    addEntry: async function (projectId, description, start, duration, apiKey, workspaceId) {
         return instance
             .post(
-                'time_entries',
+                `/workspaces/${workspaceId}/time_entries`,
                 {
                     time_entry: {
                         description: description,
